@@ -90,21 +90,33 @@ class ITCInfluxDB:
         group_by: Optional[str] = None,
     ) -> str:
         """
-        Construye una consulta para obtener datos de una base de datos.
+    Construye una consulta para obtener datos de una base de datos.
 
-        :param measurement: La medida de la base de datos de la cual se obtendrán los datos.
-        :type measurement: str
-        :param variables: Las variables que se desean obtener.
-        :type variables: List[str]
-        :param start_datetime: La fecha y hora de inicio del intervalo de tiempo de los datos (opcional).
-        :type start_datetime: str, optional
-        :param end_datetime: La fecha y hora de finalización del intervalo de tiempo de los datos (opcional).
-        :type end_datetime: str, optional
-        :param group_by: La ventana de tiempo para agrupar los datos (opcional).
-        :type group_by: str, optional
-        :return: La consulta construida.
-        :rtype: str
-        """
+    :param measurement: La medida de la base de datos de la cual se obtendrán los datos.
+    :type measurement: str
+    :param variables: Las variables que se desean obtener.
+    :type variables: List[str], optional
+    :param start_datetime: La fecha y hora de inicio del intervalo de tiempo de los datos (opcional).
+    :type start_datetime: str, optional
+    :param end_datetime: La fecha y hora de finalización del intervalo de tiempo de los datos (opcional).
+    :type end_datetime: str, optional
+    :param group_by: La ventana de tiempo para agrupar los datos (opcional).
+    :type group_by: str, optional
+    :return: La consulta construida.
+    :rtype: str
+
+    :example:
+    >>> client = ITCInfluxDB(host="example.com", port=8086, verbose=True)
+    >>> query = client.build_query(
+    ...     measurement="weather_data",
+    ...     variables=["temperature", "humidity"],
+    ...     start_datetime="2023-01-01T00:00:00Z",
+    ...     end_datetime="2023-01-02T00:00:00Z",
+    ...     group_by="1h",
+    ... )
+    >>> print(query)
+    SELECT temperature, humidity FROM weather_data WHERE time >= '2023-01-01T00:00:00Z' AND time <= '2023-01-02T00:00:00Z' GROUP BY time(1h)
+    """
         query_datetime = ""
 
         if isinstance(start_datetime, str) and isinstance(end_datetime, str):
@@ -135,7 +147,7 @@ class ITCInfluxDB:
                     [f'MEAN("{col}") AS "{col}"' for col in variables]
                 )
             else:
-                query_params = ", ".join(variables)
+                query_params = ", ".join([f'"{item}"' for item in variables])
         else:
             query_params = "*"
 
@@ -285,16 +297,18 @@ class ITCInfluxDB:
 if __name__ == "__main__":
     delphos = ITCInfluxDB(host="10.142.150.64")
 
-    query = delphos.build_query(
-        measurement="MonitoringLocalSide",
-        variables=["consumo_casa"],
-        start_datetime="15/12/2023",
-        end_datetime="15/12/2023 01:00:00",
-    )
+    delphos.build_query("measurement", variables=["esta es mi variableee", "esta es mi otra variablee"])
 
-    # data = delphos.get_data(database="DaniRPI_MGBlue", query=query)
-    test = pd.DataFrame(
-        {"A": [1, 2, None, 4], "B": [None, 5, 6, 7], "C": [8, 9, 10, 11]}
-    )
+    # query = delphos.build_query(
+    #     measurement="MonitoringLocalSide",
+    #     variables=["consumo_casa"],
+    #     start_datetime="15/12/2023",
+    #     end_datetime="15/12/2023 01:00:00",
+    # )
 
-    delphos.write_data("Datos_AEMET", "test_class", [])
+    # # data = delphos.get_data(database="DaniRPI_MGBlue", query=query)
+    # test = pd.DataFrame(
+    #     {"A": [1, 2, None, 4], "B": [None, 5, 6, 7], "C": [8, 9, 10, 11]}
+    # )
+
+    # delphos.write_data("Datos_AEMET", "test_class", [])
