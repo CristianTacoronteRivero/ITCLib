@@ -12,7 +12,7 @@
     "docwriter.style": "Auto-detect",
     "[python]": {
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
         "editor.defaultFormatter": "ms-python.black-formatter",
         "python.analysis.inlayHints.functionReturnTypes": false,
