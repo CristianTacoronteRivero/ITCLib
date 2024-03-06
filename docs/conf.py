@@ -8,7 +8,14 @@
 
 import os
 import sys
+import subprocess
 sys.path.insert(0, os.path.abspath('../src'))
+
+# Ejecutar el comando "ls -la" y capturar la salida
+result = subprocess.run(['ls', '-la'], capture_output=True, text=True)
+
+# Imprimir la salida estándar (stdout)
+print(result.stdout)
 
 project = 'ITCLib'
 copyright = '2024, Cristian Tacoronte Rivero'

@@ -27,4 +27,4 @@ sphinx:
 # poetry export -f requirements.txt --output docs/requirements.txt --without-hashes
 python:
    install:
-   - requirements: requirements.txt
+   - requirements: docs/requirements.txt
